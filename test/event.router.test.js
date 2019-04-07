@@ -23,7 +23,11 @@ beforeEach(() => {
   router(app);
 });
 
-it('/api/event', async () => {
+afterEach(async () => {
+    await EventModel.deleteMany({ title: 'supertest' });
+});
+
+it('post /api/event', async () => {
   const model = new EventModel();
   await model.save();
   console.log(model)
@@ -32,7 +36,29 @@ it('/api/event', async () => {
               .send(fakeData())
               .set('Accept', 'application/json')
               .expect('Content-Type', /json/)
-              .expect(200)
-            
+              .expect(200)  
   
+  expect(res.body.id).not.toBeNull();
+
+  const list = await EventModel.find({ title: 'supertest' });
+  expect(list.length).toEqual(1);
 });
+
+it('delete /api/event/:id', async () => {
+  const model = new EventModel(fakeData());
+  await model.save();
+
+  const list = await EventModel.find({ title: 'supertest' })
+  expect(list.length).toEqual(1);
+  console.log('list', list)
+  const res = await supertest(app)
+                    .delete(`/api/event/${model._id}`)
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .expect(200)
+  
+  const list2 = await EventModel.find({ title: 'supertest' });
+  console.log('list2', list2)
+  expect(list2.length).toEqual(0);
+});
+
