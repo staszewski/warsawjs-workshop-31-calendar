@@ -10,7 +10,12 @@ async function deleteEventById(id) {
     return id;
 };
 
+async function updateEventById(id, data) {
+  await EventModel.updateOne({ _id: id }, data)
+};
+
 module.exports = {
   createEvent,
-  deleteEventById
+  deleteEventById,
+  updateEventById
 }

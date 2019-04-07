@@ -62,3 +62,20 @@ it('delete /api/event/:id', async () => {
   expect(list2.length).toEqual(0);
 });
 
+it('put /api/event/:id', async () => {
+  const model = new EventModel(fakeData());
+  await model.save();
+
+  const id = model._id;
+
+  const res = await supertest(app)
+                    .put(`/api/event/${id}`)
+                    .send(Object.assign(fakeData()), {
+                      title: 'updejt' 
+                    })
+                    .set('Accept', 'application/json')
+                    .expect(200)
+});
+
+
+
