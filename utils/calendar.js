@@ -10,10 +10,16 @@ function buildCalendar(month) {
 
   return Array
         .from({ length: calendarWidth * calendarHeight })
-        .map((_, index) => from.add(index + 1, 'day').toString());
+        .map((_, index) => {
+           
+          return {
+            date: from.add(index + 1, 'day').toString(),
+            events: []
+          }
+        });
 };
 
-console.log(buildCalendar(1))
+
 
 module.exports = {
   buildCalendar

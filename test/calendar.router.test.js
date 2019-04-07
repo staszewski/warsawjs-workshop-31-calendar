@@ -3,7 +3,7 @@ const router = require('../web/routing/calendar.router.js');
 const supertest = require('supertest');
 const days = require('dayjs');
 const Ajv = require('ajv');
-const buildCalendar = require('../utils/calendar.js');
+const { buildCalendar } = require('../utils/calendar.js');
 const ajv = new Ajv({ schemaId: 'auto' });
 let app;
 
@@ -34,4 +34,14 @@ it('validate schema', async () => {
 it('test buildCalendar', async () => {
   const calendar = buildCalendar(1);
   expect(calendar[0]).toEqual('Sun, 28 Dec 1969 23:00:00 GMT')
+});
+
+it('test post event', async() => {
+  await supertest(app)
+        .post('/api/event')
+        .send({
+          description: ""
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
 });
