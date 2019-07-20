@@ -3,8 +3,8 @@ const router = require('../web/routing/calendar.router.js');
 const supertest = require('supertest');
 const days = require('dayjs');
 const Ajv = require('ajv');
-const { buildCalendar } = require('../utils/calendar.js');
-const ajv = new Ajv({ schemaId: 'auto' });
+const {buildCalendar} = require('../utils/calendar.js');
+const ajv = new Ajv({schemaId: 'auto'});
 let app;
 
 beforeEach(() => {
@@ -13,7 +13,9 @@ beforeEach(() => {
 });
 
 it('/api/calendar shoud get 404', async () => {
-  const res = await supertest(app).get('/api/calendar').expect(200)  
+  const res = await supertest(app)
+    .get('/api/calendar')
+    .expect(200);
 });
 
 it('validate schema', async () => {
@@ -21,27 +23,26 @@ it('validate schema', async () => {
   const validate = ajv.compile(schema);
 
   await supertest(app)
-          .get('/api/calendar')
-          .expect(200)
-          .then(res => {
-            const valid = validate(res.body);
-            expect(valid).toBeTruthy();
-            expect(validate.errors).toBeNull();
-            console.log('validate errros', validate.errors);          
-          })
+    .get('/api/calendar')
+    .expect(200)
+    .then(res => {
+      const valid = validate(res.body);
+      expect(valid).toBeTruthy();
+      expect(validate.errors).toBeNull();
+    });
 });
 
 it('test buildCalendar', async () => {
   const calendar = buildCalendar(1);
-  expect(calendar[0]).toEqual('Sun, 28 Dec 1969 23:00:00 GMT')
+  expect(calendar[0].date).toEqual('Sun, 28 Dec 1969 23:00:00 GMT');
 });
 
-it('test post event', async() => {
+it('test post event', async () => {
   await supertest(app)
-        .post('/api/event')
-        .send({
-          description: ""
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
+    .post('/api/event')
+    .send({
+      description: '',
+    })
+    .set('Accept', 'application/json')
+    .expect(200);
 });
